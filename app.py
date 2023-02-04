@@ -1,4 +1,5 @@
 uarr=barr={}
+available_Business=[]
 class user:
 
     def __init__(self, username=None,password=None,message=[],notif=[],btype=None,sid=None,date=None,subscribe=None):
@@ -54,20 +55,66 @@ def signin():
     else:
         print("Login success as Admin")
 
+def buisness_select(usernamex):
+    print("Select Buisness")
+    print("1. Restaurant")
+    print("2. Cinema")
+    print("3. Hotel")
+    print("4. Train")
+    print("5. Airplane")
+    print("6. Exit")
+    buisness = int(input("Enter your choice: "))
+    if buisness == 1:
+        print("Restaurant")
+        btype=1
+    elif buisness == 2:
+        print("Cinema")
+        btype=2
+    elif buisness == 3:
+        print("Hotel")
+        btype=3
+    elif buisness == 4:
+        print("Train")
+        btype=4
+    elif buisness == 5:
+        print("Airplane")
+        btype=5
+    elif buisness == 6:
+        print("Exit")
+        btype=None
+    else:
+        print("Invalid Choice")
+        btype=None
+    if btype!=None:
+        # available_Business.append([usernamex,btype])
+        barr[usernamex].append(btype)
+
+
+    return btype
+
 def create_seat_matrix(usernamex):
     num_row = int(input(print("Enter Number of Rows")))
-    matrix = [[0]*num_row]*num_row
-    print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in matrix]))
-    return matrix
+    if num_row>3:
+        matrix = [[0]*num_row for _ in range(num_row)]
+
+        print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in matrix]))
+        barr[usernamex].append(num_row,matrix)
+
+
+    return [matrix,num_row]
 
 def price(usernamex,matrix):
     if len(matrix)>3:
         price = int(input(print("Enter the base price")))
         return price
+        barr[usernamex].append(num_row)
+        print(barr)
     else:
         print("Add more rows")
         return None
         pass
+
+
 
 
 
@@ -118,9 +165,17 @@ if __name__ == "__main__":
     if user_typex == 1:
     ## Buisness Options
         print("Welcome "+ usernamex)
-        matrix = create_seat_matrix(usernamex)
+        btype = buisness_select(usernamex)
+        res = create_seat_matrix(usernamex)
+        matrix=res[0]
+        num_row=res[1]
         price = price(usernamex,matrix)
-        print(price)
+        available_Business.append([usernamex,btype,num_row,price])
+        print(available_Business)
+
+        # matrix[0][0]=1
+        # print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in matrix]))
+
 
 
 
