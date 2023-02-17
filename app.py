@@ -1,5 +1,6 @@
 import uuid
 
+# ['321', 1, UUID('4be4e495-d738-44f2-adac-59ab4e424cf4'), 5, [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]]
 # from pick import pick
 import enquiries
 
@@ -118,6 +119,8 @@ def create_seat_matrix(usernamex):
 def price_select(usernamex,matrix):
     if len(matrix)>3:
         price = int(input(print("Enter the base price")))
+        barr[usernamex].append(num_row)
+        barr[usernamex].append(price)
         return price
         barr[usernamex].append(num_row)
         print(barr)
@@ -177,6 +180,17 @@ def buisness_id_selectu(usernamex,b_typeu):
         print("No Buisness Available")
         return None
 
+
+def price_cal(usernamex,b_price,b_matrix,x,y):
+    #X  - Row, Y - Column
+    if x ==0 :
+        return 2*b_price
+    elif x==len(b_matrix)-1:
+        return (3/4)*b_price
+    elif y == len(b_matrix)//2 or y == len(b_matrix)//2+1:
+        return (5/4)*b_price
+    else:
+        return b_price
 
 
 
@@ -250,7 +264,9 @@ while True:
 
     elif user_typex == 0:
         # For user
+        bal = 100000
         print("Welcome " + usernamex)
+        print("Current Balance = ",bal)
         # Select available business
         b_typeu = buisness_selectu(usernamex)
         if b_typeu == None:
@@ -259,10 +275,51 @@ while True:
             b= buisness_id_selectu(usernamex,b_typeu)
             bidu=b[2]
             b_owner = b[0]
-            b_num_row = b[3]
-            b_matrix = b[4]
-            b_price = b[5]
-            print("Selection Made")
+            b_num_seat = b[3]
+            b_price = b[4]
+
+            print("Selection Made, Please enter seat number of the seat matrix as Column Num, Row Num \n")
+            print("Seats Available \n",b_num_seat)
+            print("Rows & Column Available \n",b_num_seat**(1/2))
+
+            b_matrix = barr.get(b_owner)[4]
+            b_rows = barr.get(b_owner)[5]
+            b_price = barr.get(b_owner)[6]
+            # print(b_matrix)
+            print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
+            try:
+                s = list(map(int,input("Enter the Comma Seperated seat number: ").split(",")))
+                x = s[0]
+                y = s[1]
+
+            except ValueError:
+                print("Invalid Input")
+                break
+            if x>b_rows or y>b_rows or x<0 or y<0:
+                print("Invalid Input")
+                break
+
+            if b_matrix[x][y] == 0:
+                price = price_cal(usernamex,b_price,b_matrix,x,y)
+                if bal>price:
+                    print("Price is ",price)
+                    print("Effective Available Balance is ",bal-price)
+                    b_matrix[x][y] = 1
+                    barr[b_owner][4] = b_matrix
+                    print("Seat Booked")
+                    print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
+                else:
+                    print("Insufficient Balance")
+                    break
+            else:
+                print("Seat Already Booked")
+                break
+
+
+
+
+
+
 
 
 
