@@ -7,6 +7,7 @@ import enquiries
 uarr=barr={}
 available_Business=[]
 available_user=[]
+trans=[]
 
 class user:
 
@@ -289,8 +290,8 @@ while True:
             print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
             try:
                 s = list(map(int,input("Enter the Comma Seperated seat number: ").split(",")))
-                x = s[0]
-                y = s[1]
+                x = s[0]-1
+                y = s[1]-1
 
             except ValueError:
                 print("Invalid Input")
@@ -303,17 +304,29 @@ while True:
                 price = price_cal(usernamex,b_price,b_matrix,x,y)
                 if bal>price:
                     print("Price is ",price)
-                    print("Effective Available Balance is ",bal-price)
-                    b_matrix[x][y] = 1
-                    barr[b_owner][4] = b_matrix
-                    print("Seat Booked")
-                    print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
-                else:
-                    print("Insufficient Balance")
-                    break
+                    print("Select y to confirm")
+                    if input() == 'y':
+                        if bal>price:
+                            print("Effective Available Balance is ",bal-price)
+                            b_matrix[x][y] = 1
+                            barr[b_owner][4] = b_matrix
+                            trans.append([usernamex,b_owner,bidu,(x,y),price])
+                            print("Seat Booked")
+                            print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
+                        else:
+                            print("Insufficient Balance")
+                            break
+                    else:
+                        print("Booking Cancelled")
+                        break
+
+
+
             else:
                 print("Seat Already Booked")
                 break
+
+            uarr.update({usernamex:[usernamex,passwordx,bal,(x,y),b_owner,bidu
 
 
 
