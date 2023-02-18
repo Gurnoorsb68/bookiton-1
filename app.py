@@ -5,6 +5,7 @@ import uuid
 
 uarr=barr={}
 available_Business=[]
+resell_business=[]
 available_user=[]
 transaction=[]
 class user:
@@ -169,28 +170,58 @@ def buisness_selectu(usernamex):
 
 def buisness_id_selectu(usernamex,b_typeu):
     final_available_Business=[]
-    for i in available_Business:
-        if i[1] == b_typeu:
-            final_available_Business.append(i)
-    title ="Select Buisness \n Buisness owner Name, Buisness Type, Buisness ID, Number of Seats,  Base Price"
-    if len(final_available_Business)>=1:
-        #print("Choose a Business From the List below \n")
-        print(final_available_Business, sep = '\n')
-        #p = len(final_available_Business)
-        p = int(input("Choose a Business From the List above \n"))
-        print("SELECTED BUSINESS IS", final_available_Business[p])
+    print("Select Fresh seat (0) or Resell seat (1)")
+    ss = int(input("Enter your choice: "))
+    if ss == 0:
+        for i in available_Business:
+            if i[1] == b_typeu:
+                final_available_Business.append(i)
+        title ="Select Buisness \n Buisness owner Name, Buisness Type, Buisness ID, Number of Seats,  Base Price"
+        if len(final_available_Business)>=1:
+            #print("Choose a Business From the List below \n")
+            print(final_available_Business, sep = '\n')
+            #p = len(final_available_Business)
+            p = int(input("Choose a Business From the List above \n"))
+            print("SELECTED BUSINESS IS", final_available_Business[p])
 
-        d = final_available_Business[p]
-        # new print("selected Business is", final_available_Business[p])
+            d = final_available_Business[p]
+            d.append(ss)
+            # new print("selected Business is", final_available_Business[p])
 
-       #= b = enquiries.choose("Choose a Buisness",final_available_Business)
-        # b = pick(final_available_Business, 'Select Buisness', indicator='=>', min_selection_count=1 )
-       #= print(b)
-        # Functionality of Conformation of selection
-        return d
-    else:
-        print("No Buisness Available")
-        return None
+           #= b = enquiries.choose("Choose a Buisness",final_available_Business)
+            # b = pick(final_available_Business, 'Select Buisness', indicator='=>', min_selection_count=1 )
+           #= print(b)
+            # Functionality of Conformation of selection
+            return d
+        else:
+            print("No Buisness Available")
+            return None
+    elif ss == 1 and len(resell_business)>0:
+        for i in resell_business:
+            if i[1] == b_typeu:
+                final_available_Business.append(i)
+        title ="Select Buisness \n Buisness owner Name, Buisness Type, Buisness ID, Number of Seats,  Base Price"
+        if len(final_available_Business)>=1:
+            #print("Choose a Business From the List below \n")
+            print(final_available_Business, sep = '\n')
+            #p = len(final_available_Business)
+            p = int(input("Choose a Business From the List above \n"))
+            print("SELECTED BUSINESS IS", final_available_Business[p])
+
+            d = final_available_Business[p]
+
+            # new print("selected Business is", final_available_Business[p])
+
+           #= b = enquiries.choose("Choose a Buisness",final_available_Business)
+            # b = pick(final_available_Business, 'Select Buisness', indicator='=>', min_selection_count=1 )
+           #= print(b)
+            # Functionality of Conformation of selection
+            d.append(ss)
+            return d
+
+
+
+
 
 
 def price_cal(usernamex,b_price,b_matrix,x,y):
@@ -298,6 +329,13 @@ while True:
                         b_owner = b[0]
                         b_num_seat = b[3]
                         b_price = b[4]
+                        status = b[5]
+                        if status == 1:
+                            #RESELL PROCESS
+                            uarr.get(b_owner)[3][0] = 0
+                            uarr.get(b_owner)[3][1] = None
+                            uarr.get(b_owner)[3][2] = None
+                            uarr.get(b_owner)[2]+=b_price
 
                         print("Selection Made, Please enter seat number of the seat matrix as Column Num, Row Num \n")
                         print("Seats Available \n",b_num_seat)
@@ -404,6 +442,36 @@ while True:
                     break
 
                 uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, price]})
+
+            elif user_choice == 4 and uarr.get(usernamex)[3][0]==1: # Seat already booked
+                print("Seat Resell")
+                x=uarr.get(usernamex)[3][1]
+                y=uarr.get(usernamex)[3][2]
+                price = uarr.get(usernamex)[6]
+                bal = uarr.get(usernamex)[2]
+                b_owner = uarr.get(usernamex)[4]
+                b_matrix = barr.get(b_owner)[4]
+                btype= barr.get(b_owner)[1]
+                print("Are you sure you want to resell the seat, press Y to confirm")
+                k = input()
+                if k == "Y":
+                    b = buisness_select(usernamex)
+                    btype = b[0]
+                    if btype == None:
+                        break
+                    else:
+                        bid = b[1]
+                        matrix = res[0]
+                        num_row = res[1]
+                        price = int(input("Original Price is "+str(price)+" Enter the new price: "))
+                        if price < 0:
+                            print("Invalid Price")
+                            break
+                        else:
+
+                            resell_business.append([usernamex, btype, bid, [x,y], price])
+                            print("Seat Resell Requested")
+
 
 
 
