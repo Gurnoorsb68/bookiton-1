@@ -1,13 +1,13 @@
 import uuid
 
 # ['321', 1, UUID('4be4e495-d738-44f2-adac-59ab4e424cf4'), 5, [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]]
-# from pick import pick
-import enquiries
+
+
+
 
 uarr=barr={}
 available_Business=[]
 available_user=[]
-trans=[]
 
 class user:
 
@@ -172,11 +172,20 @@ def buisness_id_selectu(usernamex,b_typeu):
             final_available_Business.append(i)
     title ="Select Buisness \n Buisness owner Name, Buisness Type, Buisness ID, Number of Seats,  Base Price"
     if len(final_available_Business)>=1:
-        b = enquiries.choose("Choose a Buisness",final_available_Business)
+        #print("Choose a Business From the List below \n")
+        print(final_available_Business, sep = '\n')
+        #p = len(final_available_Business)
+        p = int(input("Choose a Business From the List above \n"))
+        print("SELECTED BUSINESS IS", final_available_Business[p])
+
+        d = final_available_Business[p]
+        # new print("selected Business is", final_available_Business[p])
+
+       #= b = enquiries.choose("Choose a Buisness",final_available_Business)
         # b = pick(final_available_Business, 'Select Buisness', indicator='=>', min_selection_count=1 )
-        print(b)
+       #= print(b)
         # Functionality of Conformation of selection
-        return b
+        return d
     else:
         print("No Buisness Available")
         return None
@@ -192,8 +201,6 @@ def price_cal(usernamex,b_price,b_matrix,x,y):
         return (5/4)*b_price
     else:
         return b_price
-
-
 
 
 
@@ -258,6 +265,7 @@ while True:
             price = price_select(usernamex,matrix)
             available_Business.append([usernamex,btype,bid,(int(num_row)**2),price])
 
+
         # print(available_Business)
 
         # matrix[0][0]=1
@@ -304,29 +312,22 @@ while True:
                 price = price_cal(usernamex,b_price,b_matrix,x,y)
                 if bal>price:
                     print("Price is ",price)
-                    print("Select y to confirm")
-                    if input() == 'y':
-                        if bal>price:
-                            print("Effective Available Balance is ",bal-price)
-                            b_matrix[x][y] = 1
-                            barr[b_owner][4] = b_matrix
-                            trans.append([usernamex,b_owner,bidu,(x,y),price])
-                            print("Seat Booked")
-                            print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
-                        else:
-                            print("Insufficient Balance")
-                            break
-                    else:
-                        print("Booking Cancelled")
-                        break
+                    print("Effective Available Balance is ",bal-price)
+                    b_matrix[x][y] = 1
+                    barr[b_owner][4] = b_matrix
+                    print("Seat Booked")
+                    print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
 
+                   # k = input(str(print('\n'"Do you want to Cancel the seat number YES / NO")))
+                    #if k == "YES":
+                     #   b_matrix[x][y] = 1
 
-
+                else:
+                    print("Insufficient Balance")
+                    break
             else:
                 print("Seat Already Booked")
                 break
-
-            uarr.update({usernamex:[usernamex,passwordx,bal,(x,y),b_owner,bidu
 
 
 
