@@ -5,6 +5,7 @@ import uuid
 
 uarr=barr={}
 available_Business=[]
+resell_business=[]
 available_user=[]
 transaction=[]
 class user:
@@ -125,8 +126,8 @@ def price_select(usernamex,matrix):
         barr[usernamex].append(num_row)
         barr[usernamex].append(price)
         return price
-        barr[usernamex].append(num_row)
-        print(barr)
+
+
     else:
         print("Add more rows")
         return None
@@ -169,28 +170,58 @@ def buisness_selectu(usernamex):
 
 def buisness_id_selectu(usernamex,b_typeu):
     final_available_Business=[]
-    for i in available_Business:
-        if i[1] == b_typeu:
-            final_available_Business.append(i)
-    title ="Select Buisness \n Buisness owner Name, Buisness Type, Buisness ID, Number of Seats,  Base Price"
-    if len(final_available_Business)>=1:
-        #print("Choose a Business From the List below \n")
-        print(final_available_Business, sep = '\n')
-        #p = len(final_available_Business)
-        p = int(input("Choose a Business From the List above \n"))
-        print("SELECTED BUSINESS IS", final_available_Business[p])
+    print("Select Fresh seat (0) or Resell seat (1)")
+    ss = int(input("Enter your choice: "))
+    if ss == 0:
+        for i in available_Business:
+            if i[1] == b_typeu:
+                final_available_Business.append(i)
+        title ="Select Buisness \n Buisness owner Name, Buisness Type, Buisness ID, Number of Seats,  Base Price"
+        if len(final_available_Business)>=1:
+            #print("Choose a Business From the List below \n")
+            print(final_available_Business, sep = '\n')
+            #p = len(final_available_Business)
+            p = int(input("Choose a Business From the List above \n"))
+            print("SELECTED BUSINESS IS", final_available_Business[p])
 
-        d = final_available_Business[p]
-        # new print("selected Business is", final_available_Business[p])
+            d = final_available_Business[p]
+            d.append(ss)
+            # new print("selected Business is", final_available_Business[p])
 
-       #= b = enquiries.choose("Choose a Buisness",final_available_Business)
-        # b = pick(final_available_Business, 'Select Buisness', indicator='=>', min_selection_count=1 )
-       #= print(b)
-        # Functionality of Conformation of selection
-        return d
-    else:
-        print("No Buisness Available")
-        return None
+           #= b = enquiries.choose("Choose a Buisness",final_available_Business)
+            # b = pick(final_available_Business, 'Select Buisness', indicator='=>', min_selection_count=1 )
+           #= print(b)
+            # Functionality of Conformation of selection
+            return d
+        else:
+            print("No Buisness Available")
+            return None
+    elif ss == 1 and len(resell_business)>0:
+        for i in resell_business:
+            if i[1] == b_typeu:
+                final_available_Business.append(i)
+        title ="Select Buisness \n Buisness owner Name, Buisness Type, Buisness ID, Number of Seats,  Base Price"
+        if len(final_available_Business)>=1:
+            #print("Choose a Business From the List below \n")
+            print(final_available_Business, sep = '\n')
+            #p = len(final_available_Business)
+            p = int(input("Choose a Business From the List above \n"))
+            print("SELECTED BUSINESS IS", final_available_Business[p])
+
+            d = final_available_Business[p]
+
+            # new print("selected Business is", final_available_Business[p])
+
+           #= b = enquiries.choose("Choose a Buisness",final_available_Business)
+            # b = pick(final_available_Business, 'Select Buisness', indicator='=>', min_selection_count=1 )
+           #= print(b)
+            # Functionality of Conformation of selection
+            d.append(ss)
+            return d
+
+
+
+
 
 
 def price_cal(usernamex,b_price,b_matrix,x,y):
@@ -295,54 +326,85 @@ while True:
                     else:
                         b= buisness_id_selectu(usernamex,b_typeu)
                         bidu=b[2]
+                        status = b[-1]
+                        b_type = b[1]
                         b_owner = b[0]
-                        b_num_seat = b[3]
-                        b_price = b[4]
 
-                        print("Selection Made, Please enter seat number of the seat matrix as Column Num, Row Num \n")
-                        print("Seats Available \n",b_num_seat)
-                        print("Rows & Column Available \n",b_num_seat**(1/2))
+                        if status == 1:
+                            #RESELL PROCESS
+                            uarr[b_owner][3][0] = 0
+                            b_price = b[4]
 
-                        b_matrix = barr.get(b_owner)[4]
-                        b_rows = barr.get(b_owner)[5]
-                        b_price = barr.get(b_owner)[6]
-                        # print(b_matrix)
-                        print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
-                        try:
-                            s = list(map(int,input("Enter the Comma Seperated seat number: ").split(",")))
-                            x = s[0]-1
-                            y = s[1]-1
+                            if bal>b_price:
+                                uarr[b_owner][2]+=b_price
+                                uarr[usernamex][2]-=b_price
+                                x = uarr[b_owner][3][1]
+                                y = uarr[b_owner][3][2]
+                                uarr[b_owner][3][1]= None
 
-                        except ValueError:
-                            print("Invalid Input")
-                            break
-                        if x>b_rows or y>b_rows or x<0 or y<0:
-                            print("Invalid Input")
-                            break
+                                uarr[b_owner][3][2]= None
+                                print("Seat Booked Successfully")
+                                print("Seat Number is",x,y)
+                                transaction.append([usernamex, b_owner, b_price, [x, y], datetime.datetime.now()])
+                                uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, b_price]})
 
-                        if b_matrix[x][y] == 0:
-                            price = price_cal(usernamex,b_price,b_matrix,x,y)
-                            if bal>price:
-                                print("Price is ",price)
-                                print("Effective Available Balance is ",bal-price)
-                                b_matrix[x][y] = 1
-                                barr[b_owner][4] = b_matrix
-                                print("Seat Booked")
-                                transaction.append([usernamex,b_owner,price,[x,y],datetime.datetime.now()])
-                                print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
+
+
+                        elif status == 0:
+                            b_num_seat = b[3]
+                            b_price = b[4]
+                            status = b[5]
+                            b_matrix = barr.get(b_owner)[4]
+                            b_rows = barr.get(b_owner)[5]
+                            b_price = barr.get(b_owner)[6]
+                            print("Selection Made, Please enter seat number of the seat matrix as Column Num, Row Num \n")
+                            print("Seats Available \n",b_num_seat)
+                            print("Rows & Column Available \n",b_num_seat**(1/2))
+
+
+                            # print(b_matrix)
+                            print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
+                            try:
+                                s = list(map(int,input("Enter the Comma Seperated seat number: ").split(",")))
+                                x = s[0]-1
+                                y = s[1]-1
+
+                            except ValueError:
+                                print("Invalid Input")
+                                break
+                            if x>b_rows or y>b_rows or x<0 or y<0:
+                                print("Invalid Input")
+                                break
+
+                            if b_matrix[x][y] == 0:
+                                price = price_cal(usernamex,b_price,b_matrix,x,y)
+                                if bal>price:
+                                    print("Price is ",price)
+                                    print("Effective Available Balance is ",bal-price)
+                                    b_matrix[x][y] = 1
+                                    barr[b_owner][4] = b_matrix
+                                    print("Seat Booked")
+                                    transaction.append([usernamex, b_owner, price, [x, y], datetime.datetime.now()])
+                                    uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, price]})
+                                    print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in b_matrix]))
+                                else:
+                                    print("Insufficient Balance")
+                                    break
+                            else:
+                                print("Seat Already Booked")
+                                break
+
+
+
+
 
                                # k = input(str(print('\n'"Do you want to Cancel the seat number YES / NO")))
                                 #if k == "YES":
                                  #   b_matrix[x][y] = 1
 
-                            else:
-                                print("Insufficient Balance")
-                                break
-                        else:
-                            print("Seat Already Booked")
-                            break
 
-                        uarr.update({usernamex: [usernamex, passwordx, bal, [1,x,y], b_owner, bidu, price]})
+
+
 
             elif user_choice == 2 and uarr.get(usernamex)[3][0]==1: # Seat already booked
                 print("Seat Cancelled, No money is returned, you can proceed for new booking")
@@ -404,6 +466,36 @@ while True:
                     break
 
                 uarr.update({usernamex: [usernamex, passwordx, bal, [1, x, y], b_owner, bidu, price]})
+
+            elif user_choice == 4 and uarr.get(usernamex)[3][0]==1: # Seat already booked
+                print("Seat Resell")
+                x=uarr.get(usernamex)[3][1]
+                y=uarr.get(usernamex)[3][2]
+                price = uarr.get(usernamex)[6]
+                bal = uarr.get(usernamex)[2]
+                b_owner = uarr.get(usernamex)[4]
+                b_matrix = barr.get(b_owner)[4]
+                btype= barr.get(b_owner)[1]
+                print("Are you sure you want to resell the seat, press Y to confirm")
+                k = input()
+                if k == "Y":
+                    b = buisness_select(usernamex)
+                    btype = b[0]
+                    if btype == None:
+                        break
+                    else:
+                        bid = b[1]
+
+                        price = int(input("Original Price is "+str(price)+" Enter the new price: "))
+                        if price < 0:
+                            print("Invalid Price")
+                            break
+                        else:
+
+
+                            resell_business.append([usernamex, btype, bid, [x,y], price])
+                            print("Seat Resell Requested")
+
 
 
 
